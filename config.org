@@ -1,0 +1,196 @@
+#+STARTUP: content hidestars
+#+TITLE: Config for Emacs
+#+AUTHOR: Jonas Lillemets Edman
+
+* APPEARANCE
+** THEMES
+*** DOOM THEMES
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+	       :ensure t)
+#+END_SRC
+*** ZENBURN
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn-theme
+	       :ensure t)
+#+END_SRC
+
+** CURRENT THEME
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'zenburn t)
+#+END_SRC
+
+* USER INTERFACE
+** REMOVE TAB BAR
+#+BEGIN_SRC emacs-lisp 
+(tool-bar-mode -1)
+#+END_SRC
+** MISC
+
+#+BEGIN_SRC emacs-lisp 
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-set-key (kbd "<f5>") 'revert-buffer)
+#+END_SRC
+
+** ACE WINDOW
+#+BEGIN_SRC emacs-lisp 
+  (use-package ace-window
+  :ensure t
+  :init
+  (progn
+  (global-set-key [remap other-window] 'ace-window)
+  (custom-set-faces
+  '(aw-leading-char-face
+  ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+  ))
+#+END_SRC
+
+** WHICH KEY
+#+BEGIN_SRC emacs-lisp 
+  (use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+#+END_SRC
+
+** COUNSEL
+#+BEGIN_SRC emacs-lisp 
+  (use-package counsel
+    :ensure t)
+#+END_SRC
+
+#+RESULTS:
+
+** IVY
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t)
+
+#+END_SRC
+
+#+RESULTS:
+
+** SWIPER
+Swiper is a search tool. It has been set up with some useful keybindings.
+#+BEGIN_SRC emacs-lisp 
+  (use-package swiper
+  :ensure try
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (global-set-key "\C-s" 'swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-load-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+  )
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** AVY 
+#+BEGIN_SRC emacs-lisp 
+  (use-package avy
+    :ensure t
+    :bind ("M-s" . avy-goto-char))
+#+END_SRC
+* KEYBOARD SHORTCUTS
+#+BEGIN_SRC emacs-lisp 
+
+#+END_SRC
+* LANGUAGE SUPPORT
+** LATEX
+#+BEGIN_SRC emacs-lisp 
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-save-query nil)
+  ;(setq TeX-PDF-mode t)
+
+#+END_SRC
+** AUTOCOMPLETE
+
+#+BEGIN_SRC emacs-lisp 
+  (use-package auto-complete
+  :ensure t
+  :init
+  (progn
+  (ac-config-default)
+  (global-auto-complete-mode t)
+  ))
+#+END_SRC
+
+** FLYSPELL
+#+BEGIN_SRC emacs-lisp 
+  ; could be ispell as well, depending on your preferences
+  (setq ispell-program-name "aspell") 
+  ; this can obviously be set to any language your spell-checking program supports
+  (setq ispell-dictionary "english") 
+
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+#+END_SRC
+
+** OUTLINE MODE
+#+BEGIN_SRC emacs-lisp 
+(defun turn-on-outline-minor-mode ()
+  (outline-minor-mode 1))
+
+  (add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
+  (add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
+  (setq outline-minor-mode-prefix "\C-c \C-o") ; Or something elsey
+#+END_SRC
+
+** REFTEX
+#+BEGIN_SRC emacs-lisp 
+  (use-package tex-site
+    :ensure t)
+
+  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+  (add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
+  ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+  (setq LaTeX-eqnarray-label "eq"
+  LaTeX-equation-label "eq"
+  LaTeX-figure-label "fig"
+  LaTeX-table-label "tab"
+  LaTeX-myChapter-label "chap"
+  TeX-auto-save t
+  TeX-newline-function 'reindent-then-newline-and-indent
+  TeX-parse-self t
+  TeX-style-path
+  '("style/" "auto/"
+  "/usr/share/emacs21/site-lisp/auctex/style/"
+  "/var/lib/auctex/emacs21/"
+  "/usr/local/share/emacs/site-lisp/auctex/style/")
+  LaTeX-section-hook
+  '(LaTeX-section-heading
+  LaTeX-section-title
+  LaTeX-section-toc
+  LaTeX-section-section
+  LaTeX-section-label))
+#+END_SRC
+
+* ORG MODE
+** STRUCTURE TEMPLATES
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-structure-template-alist
+	       '("e" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
+#+END_SRC
+
+
